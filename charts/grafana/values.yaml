@@ -160,22 +160,24 @@ hostAliases: []
   #     - "my.host.com"
 
 ingress:
-  enabled: false
+  enabled: true
   # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
   # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
   # ingressClassName: nginx
   # Values can be templated
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
     # kubernetes.io/tls-acme: "true"
   labels: {}
-  path: /
+  path: /grafana/?(.*)
 
   # pathType is only for k8s > 1.19
   pathType: Prefix
 
   hosts:
-    - chart-example.local
+    - k8s.example.dev
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
   extraPaths: []
   # - path: /*
@@ -522,9 +524,9 @@ grafana.ini:
   grafana_net:
     url: https://grafana.net
 ## grafana Authentication can be enabled with the following values on grafana.ini
- # server:
+  server:
       # The full public facing url you use in browser, used for redirects and emails
- #    root_url:
+     root_url: http://localhost:3000/grafana
  # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
  # auth.github:
  #    enabled: false
